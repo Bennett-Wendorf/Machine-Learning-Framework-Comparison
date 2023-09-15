@@ -1,0 +1,24 @@
+.vscode
+
+__pycache__/
+
+*.lock
+
+# Datasets
+data/
+
+# Models
+
+# PyTorch models
+*.pth
+
+# Tensorflow models
+*.h5
+
+# Keras models
+*.keras
+
+# Scikit-learn models
+*.pkl
+*.pickle
+*.joblib
