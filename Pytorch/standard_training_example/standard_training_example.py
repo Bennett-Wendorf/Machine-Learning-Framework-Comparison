@@ -6,8 +6,9 @@ from helpers import fit, evaluate
 from iris_dataset import IrisDataset
 import matplotlib.pyplot as plt
 
-from torchvision import datasets
-from torchvision.transforms import ToTensor
+# Constants
+INPUT_SIZE = 4
+OUTPUT_SIZE = 3
 
 # Hyperparameters
 LEARNING_RATE = 0.01
@@ -23,8 +24,7 @@ train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE)
 test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE)
 
 # Initialize the model
-# model = NeuralNetwork(input_size=(28*28), output_size=10, inner_layer_size=512)
-model = NeuralNetwork(input_size=4, output_size=3)
+model = NeuralNetwork(input_size=INPUT_SIZE, output_size=OUTPUT_SIZE)
 
 # # Initialize the loss function (Here we use the standard cross entropy loss function)
 loss_fn = nn.CrossEntropyLoss()
@@ -45,7 +45,6 @@ ax1.set_xlabel("Epoch")
 ax2 = ax1.twinx()
 ax2.plot(losses, color="red")
 ax2.set_ylabel("Loss", color="red")
-plt.xlabel("Epoch")
 plt.ylim([0, max(plt.ylim())])
 fig.tight_layout()
 plt.show()
