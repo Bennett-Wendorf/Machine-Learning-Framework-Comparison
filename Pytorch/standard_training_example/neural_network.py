@@ -16,7 +16,6 @@ class NeuralNetwork(nn.Module):
     '''
     def __init__(self, input_size, output_size, inner_layer_size=INNER_LAYER_SIZE):
         super().__init__()
-        self.flatten = nn.Flatten()
         self.linear_relu_sequential_model = nn.Sequential(
             nn.Linear(input_size, inner_layer_size),
             nn.ReLU(),
@@ -24,6 +23,5 @@ class NeuralNetwork(nn.Module):
         )
 
     def forward(self, x):
-        x = self.flatten(x)
         logits = self.linear_relu_sequential_model(x)
         return logits
