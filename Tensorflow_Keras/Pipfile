@@ -8,6 +8,7 @@ tensorflow = "*"
 keras = "*"
 matplotlib = "*"
 pandas = "*"
+numpy = "*"
 
 [dev-packages]
 
