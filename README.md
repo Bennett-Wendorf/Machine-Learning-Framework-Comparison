@@ -43,16 +43,74 @@ The following frameworks were used for this project:
 - Tensorflow/Keras
 
 # Framework Comparison Metrics
-- Control over network structure <!-- (I.e. Can I have different activations per layer, options for layer types like conv, etc) -->
+For the purposes of this project, the following metrics will be used to compare the frameworks, with a score out of 5 for each metric:
 - Ease of data import <!-- (Iris examples are probably better for this since I didn't really test with MNIST) -->
+- Control over network structure <!-- (I.e. Can I have different activations per layer, options for layer types like conv, etc) -->
 - Loss function specification
 - Optimizer specification
 - Training loop customization
     - Metrics during training 
 - Network evaluation
-<!-- TODO: Make this a table with networks on score out of 5 -->
 
-# Pytorch <!-- Talk about Pytorch on the comparison metrics, and include any unique details if relevant -->
+| Framework           | Score |
+|---------------------|-------|
+| Pytorch             | 25/30 |
+| Scikit-learn        | --/30 |
+| Tensorflow/Keras    | --/30 |
+
+# Pytorch <!-- TODO: Talk about Pytorch on the comparison metrics, and include any unique details if relevant -->
+| Metric                         | Score |
+|--------------------------------|-------|
+| Ease of data import            | 4     |
+| Control over network structure | 5     |
+| Loss function specification    | 4     |
+| Optimizer specification        | 4     |
+| Training loop customization    | 5     |
+| Network evaluation             | 4     |
+| Total                          | 25/30 |
+
+## Ease of data import
+Pytorch has a strong internal library of popular datasets, including both the iris and MNIST datasets used in this project. Of course, these datasets are preformatted to be easy to use with Pytorch networks, which makes getting started learning the rest of Pytorch's syntax much easier. 
+
+All of these built-in datasets are simply Python classes that inherit from Pytorch's `Dataset` class, making it extraordinarily easy to create your own dataset classes. This is integral to the ease of use of any framework as most real-world datasets will not be pre-formatted to be used with any framework.
+
+Once the dataset is created, it is passed into a `DataLoader` class, which is used to iterate over the dataset in batches. This is a very useful class as it allows the user to specify the batch size, whether or not to shuffle the data, and whether or not to use multiple threads to load the data. This is especially useful for large datasets that may not fit in memory, as the data can be loaded in batches and then discarded after each batch is used.
+
+For this combination of reasons, Pytorch's data import system is one of the easier ones to use, though formatting and importing data is always one of the most complicated parts of machine learning.
+
+## Control over network structure
+When specifying a network in Pytorch, the developer must create a new class that subclasses Pytorch's `nn.Module` class. This class must have a `__init__` method that defines the layers of the network, and a `forward` method that defines how the data flows through the network. Pytorch has helper classes such as the `nn.Sequential` class that make it easy to create a network with a simple structure, but it is also easy to create a network with a more complex structure by adding more complex behavior to the `forward` method. For networks like the MNIST example, the `forward` method can also contain some preprocessing steps, such as flattening the input image.
+
+In Pytorch, layers and activation functions are separate from each other, and each need to be specified in the `__init__` function. This allows for more flexibility in the network structure, but it also means that the developer needs to be more careful when creating the network. Most common layers and activation functions are available in Pytorch's `nn` module, but it is also possible to create custom layers and activation functions by subclassing Pytorch's `nn.Module` class.
+
+An example of a simple network structure in Pytorch is shown below:
+```python
+class MNISTNetwork(nn.Module):
+    def __init__(self, input_size, output_size, inner_layer_size=INNER_LAYER_SIZE):
+        super().__init__()
+        self.flatten = nn.Flatten()
+        self.linear_relu_sequential_model = nn.Sequential(
+            nn.Linear(input_size, inner_layer_size),
+            nn.ReLU(),
+            nn.Linear(inner_layer_size, inner_layer_size),
+            nn.ReLU(),
+            nn.Linear(inner_layer_size, output_size)
+        )
+
+    def forward(self, x):
+        x = self.flatten(x)
+        logits = self.linear_relu_sequential_model(x)
+        return logits
+```
+
+## Loss function and optimizer specification
+Pytorch has a large number of loss functions and optimizers available in the `torch.nn` and `torch.optim` modules, respectively. The loss functions are all subclasses of Pytorch's `_Loss` class, and the optimizers are all subclasses of Pytorch's `optim.Optimizer` class. This means that it is possible to create custom loss functions and optimizers by sub-classing these classes, though this is not necessary for most use cases.
+
+## Training loop customization
+Unlike some other frameworks, Pytorch does not have a built-in training loop. This means that the developer has complete control over the training loop, which is both a strength and a weakness. It is a strength because it allows the developer to customize the training loop to their specific needs, but it is a weakness because it means that the developer needs to write more code to get a working network. Pytorch makes writing these training loops relatively easy, providing forward propagation methods though calling the network itself, backward propagation through the `backward` method of the loss function, and optimization through the `step` method of the optimizer. Because the training loop is completely custom, the developer can specify any metrics they want to keep track of during training, such as accuracy, loss, etc.
+
+## Network evaluation
+Like training, Pytorch does not have a built-in evaluation method, requiring the developer to write their own. This is not a difficult task, as Pytorch provides a `torch.no_grad` context manager that disables gradient calculation, which is not needed during evaluation. This means that the developer can use the same forward propagation method that they used during training to evaluate the network. As with during training, the developer can specify any metrics they want to keep track of during evaluation.
 
 # Scikit-learn <!-- TODO: Talk about Scikit-learn on the comparison metrics, and include any unique details if relevant -->
 
