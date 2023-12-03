@@ -58,7 +58,7 @@ For the purposes of this project, the following metrics will be used to compare 
 | Scikit-learn        | --/30 |
 | Tensorflow/Keras    | --/30 |
 
-# Pytorch <!-- TODO: Talk about Pytorch on the comparison metrics, and include any unique details if relevant -->
+# Pytorch
 | Metric                         | Score |
 |--------------------------------|-------|
 | Ease of data import            | 4     |
