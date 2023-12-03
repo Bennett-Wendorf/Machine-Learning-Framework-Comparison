@@ -30,10 +30,14 @@ The network structure used for this example is a simple feed-forward network wit
 The MNIST dataset is a common dataset used for image classification problems. It contains 60,000 training images and 10,000 testing images of handwritten digits. Each image is 28x28 pixels, and each pixel is represented by a value between 0 and 255. The goal is to classify each image into one of the 10 digits. The full dataset is available as a module in many machine learning frameworks, which is what was used for these examples. The original dataset can be found in the [MNIST Database](http://yann.lecun.com/exdb/mnist/).
 
 A small sample of the dataset looks like the following:
+
 ![MNIST Sample](res/mnist-3.0.1.png)
+
+*Image courtesy of [Digital Ocean](https://www.digitalocean.com/community/tutorials/mnist-dataset-in-python)*
 
 ### Network Structure
 The network structure used for this example is a simple feed-forward network with 2 hidden layers, making 4 total layers. The input layer has 784 nodes, one for each pixel in the image. Note that the image is flattened into a 1-dimensional structure before it is inputted into the network. The hidden layers have 512 nodes each, and the output layer has 10 nodes, one for each digit. The network used in this example uses ReLU activations functions, a cross entropy loss function, and stochastic gradient descent as an optimizer. The network structure is visualized below.
+
 ![MNIST Network Structure](res/MNIST_Visualization_11_23_23.png)
 
 ## Frameworks
@@ -55,7 +59,7 @@ For the purposes of this project, the following metrics will be used to compare 
 | Framework           | Score |
 |---------------------|-------|
 | Pytorch             | 25/30 |
-| Scikit-learn        | --/30 |
+| Scikit-learn        | 13/30 |
 | Tensorflow/Keras    | --/30 |
 
 # Pytorch
@@ -112,8 +116,80 @@ Unlike some other frameworks, Pytorch does not have a built-in training loop. Th
 ## Network evaluation
 Like training, Pytorch does not have a built-in evaluation method, requiring the developer to write their own. This is not a difficult task, as Pytorch provides a `torch.no_grad` context manager that disables gradient calculation, which is not needed during evaluation. This means that the developer can use the same forward propagation method that they used during training to evaluate the network. As with during training, the developer can specify any metrics they want to keep track of during evaluation.
 
-# Scikit-learn <!-- TODO: Talk about Scikit-learn on the comparison metrics, and include any unique details if relevant -->
+# Scikit-learn 
+| Metric                         | Score |
+|--------------------------------|-------|
+| Ease of data import            | 3     |
+| Control over network structure | 2     |
+| Loss function specification    | 1     |
+| Optimizer specification        | 3     |
+| Training loop customization    | 1     |
+| Network evaluation             | 3     |
+| Total                          | 13/30 |
 
-# Tensorflow/Keras <!-- TODO: Talk about Tensorflow/Keras on the comparison metrics, and include any unique details if relevant -->
+## Ease of data import
+Like Pytorch, scikit-learn does have some popular datasets built into the framework, though the documentation on these is not as easy to find as Pytorch's. Once found, however, built-in datasets are relatively easy to use. 
+
+Using custom datasets is more difficult in scikit-learn than in Pytorch. While scikit's tools for data manipulation are unmatched, the framework seems less supportive of popular data libraries such as Numpy arrays and Pandas dataframes, only really seeming to support Numpy. This means that the developer needs to convert their data into Numpy arrays before using it with scikit-learn, which is unnecessary in some other frameworks.
+
+Luckily, once the data is imported and formatted, the fit method only requires the data and labels to be in two separate Numpy arrays, so there are plenty of options for handling the data manipulation necessary to get to that step.
+
+## Control over network structure
+As opposed to Pytorch's superb network specification structure, scikit-learn doesn't really allow developers to create fully custom networks. Instead, typical networks are created using one of a small selection of classes. For the examples in this project, scikit-learn's `MLPClassifier` class was used, which creates a feed-forward network with the specified number of hidden layers.
+
+All of the necessary pieces for small examples like Iris and MNIST are available in scikit-learn, but the lack of flexibility in the network structure makes it difficult to create more complex networks.
+
+An example of a simple networks structure in scikit-learn is shown below:
+```python
+self.model = MLPClassifier(
+    hidden_layer_sizes=(inner_layer_size, inner_layer_size), 
+    activation='relu', 
+    solver='sgd', 
+    max_iter=epochs,
+    alpha=0, # Don't add regularization
+    learning_rate_init=learning_rate,
+    shuffle=False,
+    momentum=0,
+    tol=0, # Don't automatically stop upon convergence
+    verbose=True
+)
+```
+
+## Loss function and optimizer specification
+Scikit-learn does not appear to have a way, at least with their `MLPClassifier` class, to specify a loss function. According to documentation, log loss is used for all calculations. While this is sufficient for most use-cases, not having the flexibility to specify a custom loss function is a major drawback.
+
+Scikit-learn does have a few options for optimizers, though they are not as flexible as those in other frameworks. The `MLPClassifier` class has a `solver` parameter that allows the developer to specify the optimizer, but the options are limited to `sgd`, `adam`, and `lbfgs`. The `sgd` option was used for both examples in this project to maintain consistency across frameworks, though `adam` is the default option.
+
+## Training loop customization
+Scikit-learn's training loop is fully encompassed in the `fit` method of the `MLPClassifier` class. This means that the developer has very little control over the training loop, and cannot specify any metrics to keep track of during training. The advantage of a system such as this is that it requires little experience with training neural networks to get started, but does limit possibilities for more advanced users.
+
+## Network evaluation
+In a similar way to the integrated `fit` function, scikit-learn also has an integrated `predict` function that, in conjunction with the `metrics` module, allows the developer to create a basic evaluation procedure. The `predict` function can be run on a full Numpy array of input data, and will return a Numpy array of predictions. From there, the `accuracy_score` in the `metrics` module can be used to calculate the accuracy of the predictions. 
+
+# Tensorflow/Keras 
+| Metric                         | Score |
+|--------------------------------|-------|
+| Ease of data import            | -     |
+| Control over network structure | -     |
+| Loss function specification    | -     |
+| Optimizer specification        | -     |
+| Training loop customization    | -     |
+| Network evaluation             | -     |
+| Total                          | --/30 |
+
+## Ease of data import
+<!-- TODO -->
+
+## Control over network structure
+<!-- TODO -->
+
+## Loss function and optimizer specification
+<!-- TODO -->
+
+## Training loop customization
+<!-- TODO -->
+
+## Network evaluation
+<!-- TODO -->
 
 # Discussion <!-- TODO: Talk about what I like and why. Maybe also what I think would be good for beginners -->
