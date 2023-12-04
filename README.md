@@ -24,6 +24,8 @@ The network structure used for this example is a simple feed-forward network wit
 
 ![Iris Network Structure](res/Iris_Small_Visualization_11_23_23.png)
 
+*Image made with [NeuraViz](https://github.com/Bennett-Wendorf/NeuraViz)*
+
 ## MNIST Example
 
 ### Dataset
@@ -39,6 +41,8 @@ A small sample of the dataset looks like the following:
 The network structure used for this example is a simple feed-forward network with 2 hidden layers, making 4 total layers. The input layer has 784 nodes, one for each pixel in the image. Note that the image is flattened into a 1-dimensional structure before it is inputted into the network. The hidden layers have 512 nodes each, and the output layer has 10 nodes, one for each digit. The network used in this example uses ReLU activations functions, a cross entropy loss function, and stochastic gradient descent as an optimizer. The network structure is visualized below.
 
 ![MNIST Network Structure](res/MNIST_Visualization_11_23_23.png)
+
+*Image made with [NeuraViz](https://github.com/Bennett-Wendorf/NeuraViz)*
 
 ## Frameworks
 The following frameworks were used for this project:
@@ -60,7 +64,7 @@ For the purposes of this project, the following metrics will be used to compare 
 |---------------------|-------|
 | Pytorch             | 25/30 |
 | Scikit-learn        | 13/30 |
-| Tensorflow/Keras    | --/30 |
+| Tensorflow/Keras    | 23/30 |
 
 # Pytorch
 | Metric                         | Score |
@@ -169,27 +173,42 @@ In a similar way to the integrated `fit` function, scikit-learn also has an inte
 # Tensorflow/Keras 
 | Metric                         | Score |
 |--------------------------------|-------|
-| Ease of data import            | -     |
-| Control over network structure | -     |
-| Loss function specification    | -     |
-| Optimizer specification        | -     |
-| Training loop customization    | -     |
-| Network evaluation             | -     |
-| Total                          | --/30 |
+| Ease of data import            | 3     |
+| Control over network structure | 5     |
+| Loss function specification    | 4     |
+| Optimizer specification        | 4     |
+| Training loop customization    | 3     |
+| Network evaluation             | 4     |
+| Total                          | 23/30 |
+
+## Overview
+While Tensorflow and Keras are technically two separate libraries, Keras is effectively a high level API on top of Tensorflow's relatively low level one. Tensorflow's official documentation also recommends that most users use Keras instead of Tensorflow directly. For these reasons, this project exclusively explored the Keras API.
 
 ## Ease of data import
-<!-- TODO -->
+As with the other two frameworks, Keras has a number of built in datasets including MNIST. Though it does not appear to include a ready-made copy of the Iris dataset, importing the dataset from a CSV (like this project does) is relatively easy, or other libraries can be used such as scikit-learn to obtain the data.
+
+For the purposes of this project, the iris dataset was imported from a CSV using `pandas` and the MNIST dataset was obtained through Keras' built in dataset.
+
+When importing custom data, mapping labels and transforming the data can be more challenging than Pytorch, as some of the data manipulation functionalities are less powerful.
 
 ## Control over network structure
-<!-- TODO -->
+Building a network in Keras is incredibly similar to the way a developer would do it in Pytorch. To build a network, the Keras `Sequential` class can be used to construct a simple sequential neural network. As parameters to that, a list of layers can be passed, each with many options. For the networks in this project, the `Dense` layer class can be used with a specified activation function. Although `Dense` was used for this project, Keras has many other options that can be mixed in as well to build a variety of networks.
+
+```python
+self.model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=input_size, activation='relu'),
+    tf.keras.layers.Dense(units=inner_layer_size, activation='relu'),
+    tf.keras.layers.Dense(units=output_size, activation='softmax')
+])
+```
 
 ## Loss function and optimizer specification
-<!-- TODO -->
+Like Pytorch, loss functions and optimizers can be specified in Keras as subclasses of the `LossFunctionWrapper` and `Optimizer` class specifically. Most loss functions and optimizers that would typically be used are available in Keras already, but this subclassing approach allows a developer to write their own version of either if they need to. For the purposes of this project, the included `SparseCategoricalCrossentropy` loss function and `SGD` (stochastic gradient descent) optimizer were used in both examples.
 
 ## Training loop customization
-<!-- TODO -->
+In Keras, the training loop is included in the `fit` function. However, many metrics can be tracked during training by modifying the `metrics` parameter when compiling the model. Many popular metrics are built in, such as tracking accuracy over time. In addition, loss is automatically tracked. While not as flexible as Pytorch's fully custom fit function, almost any metric can be tracked here by subclassing the `Metric` class.
 
 ## Network evaluation
-<!-- TODO -->
+Final trained network evaluation can be completed in a similar way to the other two frameworks. That is, Keras includes an `evaluate` function that returns the loss plus all metrics included during model compilation. This method takes a test set in the form of an input tensor and a label tensor. 
 
 # Discussion <!-- TODO: Talk about what I like and why. Maybe also what I think would be good for beginners -->
